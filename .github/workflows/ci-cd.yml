@@ -26,18 +26,19 @@ jobs:
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
 
-
       - name: Build and push Docker image
-          # Nombra tu imagen local
+        run: |
+      
+          # 1) Nombra tu imagen local
           IMAGE_NAME=cesarapp
 
-          # 1) Construir la imagen (Dockerfile en la raíz)
+          # 2) Construir la imagen (Dockerfile en la raíz)
           docker build -t $IMAGE_NAME:latest .
 
-          # 2) Etiquetar apuntando a Docker Hub: <usuario>/<repo>:tag
+          # 3) Etiquetar apuntando a Docker Hub: <usuario>/<repo>:tag
           docker tag $IMAGE_NAME:latest ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:latest
 
-          # 3) Subir a Docker Hub
+          # 4) Subir a Docker Hub
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:latest
 
         # run: |
