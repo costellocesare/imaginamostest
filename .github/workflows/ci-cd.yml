@@ -20,13 +20,17 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Log in to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1
+      #- name: Log in to Amazon ECR
+        #uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+
 
       - name: Build and push Docker image
         run: |
           APP_NAME=cesarapp
-          AWS_ACCOUNT_ID=123456789012
+          AWS_ACCOUNT_ID=267419910235
           AWS_REGION=us-east-1
 
           docker build -t $APP_NAME:latest .
@@ -47,6 +51,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+      
 
       - name: Update kubeconfig
         run: |
