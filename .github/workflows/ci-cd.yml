@@ -68,8 +68,7 @@ jobs:
 
       - name: Update kubeconfig
         run: |
-          CLUSTER_NAME=rappi-web-eks-cluster
-          aws eks update-kubeconfig --name $CLUSTER_NAME --region us-east-1
+            aws eks update-kubeconfig --name rappi-web-eks-cluster --region us-east-1
 
       - name: Deploy to EKS
         run: |
