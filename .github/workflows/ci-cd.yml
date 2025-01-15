@@ -2,12 +2,13 @@ name: CI/CD
 
 on:
   push:
-    branches: 
+    branches:
       - main
-  # Puedes incluir pull_request, tags, etc.
+  # También podrías agregar 'pull_request', tags, etc.
 
 jobs:
-  build-test:
+  # 1) Lint y Test
+  build-test-lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -18,69 +19,86 @@ jobs:
         with:
           node-version: 16
 
+      # Instala tus dependencias
       - name: Install dependencies
         run: npm install
 
+      # Lint (código estático)
+      - name: Lint
+        run: npm run lint  # Ajusta si tu script se llama distinto
+
+      # Compilar la aplicación (si tu proyecto necesita build, ej. React, Next.js, etc.)
       - name: Build
         run: npm run build
 
-      - name: Lint code
-        run: npm run lint
-
+      # Test unitarios (si los tienes configurados)
       - name: Test
         run: npm test
-      
-      # (Opcional) Enviar reporte de pruebas a SonarQube 
-      # si manejas algo como 'sonar-scanner'
+
+      # Opcional: Análisis estático con SonarQube
       # - name: SonarQube analysis
       #   run: sonar-scanner
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  publish-image:
+  # 2) Build & Push Docker
+  build-and-push-docker:
     runs-on: ubuntu-latest
-    needs: build-test  # Se ejecuta sólo si build-test fue exitoso
+    needs: build-test-lint
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Inicia sesión en Amazon ECR
-      - name: Log in to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1
-        with:
-          # OJO, la región que uses
-          aws-region: us-east-1
-
-      - name: Build, tag and push image to ECR
-        run: |
-          # Reemplaza 'dockerimaginamos' o 'my-docker-image' 
-          # por el nombre que uses en tu Dockerfile
-          docker build -t cesarapp .
-
-          # Etiquetamos la imagen
-          docker tag cesarapp:latest 123456789012.dkr.ecr.us-east-1.amazonaws.com/cesarapp:latest
-
-          # Subimos la imagen
-          docker push 123456789012.dkr.ecr.us-east-1.amazonaws.com/cesarapp:latest
-
-  deploy-eks:
-    runs-on: ubuntu-latest
-    needs: publish-image  # Se ejecuta sólo si publish-image fue exitoso
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      # Configura credenciales de AWS
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: us-east-1  # Ajusta tu región
 
-      # Actualiza kubeconfig para usar tu clúster EKS
-      - name: Update Kubeconfig
-        run: aws eks update-kubeconfig --name rappi-web-eks-cluster --region us-east-1
+      # Log in to Amazon ECR
+      - name: Log in to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
 
-      # Aplica tu archivo(s) deployment.yaml para desplegar cesarapp
+      # Build and push Docker image
+      - name: Build and push Docker image
+        run: |
+          # Nombre que usarás para tu app
+          APP_NAME=cesarapp
+          # Reemplaza con tu cuenta y región de ECR
+          AWS_ACCOUNT_ID=123456789012
+          AWS_REGION=us-east-1
+
+          # Construye la imagen
+          docker build -t $APP_NAME:latest .
+
+          # Etiqueta la imagen apuntando a tu repo ECR
+          docker tag $APP_NAME:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$APP_NAME:latest
+
+          # Sube la imagen
+          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$APP_NAME:latest
+
+  # 3) Deploy a EKS
+  deploy-eks:
+    runs-on: ubuntu-latest
+    needs: build-and-push-docker
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1  # Ajusta tu región
+
+      - name: Update kubeconfig
+        run: |
+          CLUSTER_NAME=rappi-web-eks-cluster  # Ajusta el nombre de tu clúster
+          aws eks update-kubeconfig --name $CLUSTER_NAME --region us-east-1
+
       - name: Deploy to EKS
         run: |
+          # Aplica tu archivo(s) .yaml (Deployment, Service, etc.)
           kubectl apply -f deployment.yaml
