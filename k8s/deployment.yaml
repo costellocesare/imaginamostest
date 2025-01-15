@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-deployment
+  labels:
+    app: my-app
+spec:
+  replicas: 2 # Número de réplicas de tu aplicación
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: my-app-container
+          image: my-docker-image:latest # Cambia esto por la imagen de tu aplicación
+          ports:
+            - containerPort: 3000 # Cambia esto si tu aplicación usa otro puerto
+          env: # Variables de entorno para tu aplicación
+            - name: NODE_ENV
+              value: production
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+spec:
+  selector:
+    app: my-app
+  ports:
+    - protocol: TCP
+      port: 80 # Puerto expuesto en el servicio
+      targetPort: 3000 # Puerto en el contenedor
+  type: LoadBalancer # Esto crea un balanceador de carga externo en AWS
