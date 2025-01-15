@@ -26,7 +26,7 @@ jobs:
       - name: Build and push Docker image
         run: |
           APP_NAME=cesarapp
-          AWS_ACCOUNT_ID=123456789012
+          AWS_ACCOUNT_ID=267419910235
           AWS_REGION=us-east-1
 
           docker build -t $APP_NAME:latest .
