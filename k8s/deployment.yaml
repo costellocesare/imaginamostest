@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: cesarapp-container
-          image: dockerimaginamos:latest  # <--- Cambia esto si tu imagen está en ECR u otro registry
+          image: sosicker/cesarapp:latest  # Cambia por tu usuario de Docker Hub
           ports:
             - containerPort: 3000
 ---

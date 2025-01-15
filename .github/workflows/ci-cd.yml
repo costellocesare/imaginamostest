@@ -20,22 +20,34 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      #- name: Log in to Amazon ECR
-        #uses: aws-actions/amazon-ecr-login@v1
+      # - name: Log in to Amazon ECR
+      #   uses: aws-actions/amazon-ecr-login@v1
 
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
 
 
       - name: Build and push Docker image
-        run: |
-          APP_NAME=cesarapp
-          AWS_ACCOUNT_ID=267419910235
-          AWS_REGION=us-east-1
+          # Nombra tu imagen local
+          IMAGE_NAME=cesarapp
 
-          docker build -t $APP_NAME:latest .
-          docker tag $APP_NAME:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$APP_NAME:latest
-          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$APP_NAME:latest
+          # 1) Construir la imagen (Dockerfile en la raíz)
+          docker build -t $IMAGE_NAME:latest .
+
+          # 2) Etiquetar apuntando a Docker Hub: <usuario>/<repo>:tag
+          docker tag $IMAGE_NAME:latest ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:latest
+
+          # 3) Subir a Docker Hub
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:latest
+
+        # run: |
+        #   APP_NAME=cesarapp
+        #   AWS_ACCOUNT_ID=267419910235
+        #   AWS_REGION=us-east-1
+
+        #   docker build -t $APP_NAME:latest .
+        #   docker tag $APP_NAME:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$APP_NAME:latest
+        #   docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$APP_NAME:latest
 
   # 2) Deploy a EKS
   deploy-eks:
