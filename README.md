@@ -79,7 +79,7 @@ Una vez completada la configuración, se ejecutaron los siguientes comandos:
 
 `terraform apply`: Para aplicar los cambios y crear la infraestructura en AWS. <br>
 
-El proceso de terraform apply falló debido a limitaciones de permisos en la cuenta de AWS configurada. Este detalle debe ser revisado antes de proceder con la implementación final.
+El proceso de `terraform apply` falló debido a limitaciones de permisos en la cuenta de AWS configurada. Este detalle debe ser revisado antes de proceder con la implementación final.
 
 3. Monitoreo centralizado de microservicios
    
