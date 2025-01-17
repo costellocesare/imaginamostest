@@ -26,13 +26,11 @@ resource "random_id" "bucket_id" {
 # Nombre del bucket creado
 output "bucket_name" {
   description = "Nombre del bucket creado"
-  value       = aws_s3_bucket.storage[0].bucket
-  condition   = var.enabled
+  value       = length(aws_s3_bucket.storage) > 0 ? aws_s3_bucket.storage[0].bucket : null
 }
 
 # ARN del bucket creado
 output "bucket_arn" {
   description = "ARN del bucket creado"
-  value       = aws_s3_bucket.storage[0].arn
-  condition   = var.enabled
+  value       = length(aws_s3_bucket.storage) > 0 ? aws_s3_bucket.storage[0].arn : null
 }

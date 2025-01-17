@@ -1,13 +1,14 @@
 # Módulo para la creación de la VPC
 
-# Variable para el bloque CIDR de la VPC
+# Variables de entrada
 variable "vpc_cidr" {
   description = "Bloque CIDR para la VPC"
+  type        = string
 }
 
-# Variable para la región de despliegue
 variable "region" {
-  description = "Región de despliegue"
+  description = "Región donde se desplegarán los recursos"
+  type        = string
 }
 
 # Crear la VPC
@@ -21,7 +22,7 @@ resource "aws_vpc" "main" {
   }
 }
 
-# Crear subnets públicas
+# Subnets públicas
 resource "aws_subnet" "public" {
   count                  = 2
   vpc_id                 = aws_vpc.main.id
@@ -33,26 +34,56 @@ resource "aws_subnet" "public" {
   }
 }
 
-# Crear subnets privadas
+# Subnets privadas
 resource "aws_subnet" "private" {
-  count                  = 2
-  vpc_id                 = aws_vpc.main.id
-  cidr_block             = cidrsubnet(var.vpc_cidr, 4, count.index + 2)
+  count      = 2
+  vpc_id     = aws_vpc.main.id
+  cidr_block = cidrsubnet(var.vpc_cidr, 4, count.index + 2)
 
   tags = {
     Name = "Private-Subnet-${count.index}"
   }
 }
 
-# Exportar los recursos
+# Internet Gateway
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "Internet-Gateway"
+  }
+}
+
+# NAT Gateway
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public[0].id
+
+  tags = {
+    Name = "NAT-Gateway"
+  }
+}
+
+# Elastic IP para NAT Gateway
+resource "aws_eip" "nat" {
+  # Elimina el argumento `vpc = true`, ya que es innecesario
+  tags = {
+    Name = "NAT-EIP"
+  }
+}
+
+# Outputs del módulo
 output "vpc_id" {
-  value = aws_vpc.main.id
+  description = "ID de la VPC creada"
+  value       = aws_vpc.main.id
 }
 
 output "public_subnets" {
-  value = aws_subnet.public[*].id
+  description = "Lista de subnets públicas"
+  value       = aws_subnet.public[*].id
 }
 
 output "private_subnets" {
-  value = aws_subnet.private[*].id
+  description = "Lista de subnets privadas"
+  value       = aws_subnet.private[*].id
 }

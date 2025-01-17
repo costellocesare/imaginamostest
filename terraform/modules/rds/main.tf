@@ -52,7 +52,7 @@ resource "aws_db_instance" "main" {
   engine                    = "postgres"
   engine_version            = "14"
   instance_class            = var.db_instance_class
-  name                      = var.db_name
+  db_name                   = var.db_name
   username                  = var.db_username
   password                  = var.db_password
   publicly_accessible       = false
@@ -76,13 +76,11 @@ resource "aws_db_subnet_group" "main" {
 # Endpoint de la base de datos
 output "db_endpoint" {
   description = "Endpoint de conexión para la base de datos"
-  value       = aws_db_instance.main[0].endpoint
-  condition   = var.enabled
+  value       = var.enabled ? aws_db_instance.main[0].endpoint : null
 }
 
 # Nombre de la base de datos
 output "db_name" {
   description = "Nombre de la base de datos creada"
-  value       = aws_db_instance.main[0].name
-  condition   = var.enabled
+  value       = var.enabled ? aws_db_instance.main[0].db_name : null
 }
