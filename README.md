@@ -15,8 +15,8 @@ otro de tu preferencia).
   
   Requisitos:
     Estas Credenciales tiene duración de una semana
-      ● Aws Access Key ##################
-      ● Aws Secret Access Key  ################
+            ● Aws Access Key ################## <br>
+            ● Aws Secret Access Key  ################
       ● Cluster Name ##################
       ● Sonar URL #################
       ● Sonar Token #######################
