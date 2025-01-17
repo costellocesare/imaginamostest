@@ -1,7 +1,2 @@
 node_modules/
 .env
-# Ignorar archivos generados por Terraform
-terraform/.terraform/
-*.tfstate
-*.tfstate.backup
-*.tfplan
