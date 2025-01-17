@@ -26,7 +26,7 @@ proponer cuál es la configuración faltante para llevar a cabo el proceso
 
 Desarrollo:
 
-e creó un repositorio con CI/CD configurado mediante un pipeline de GitHub Actions (ci-cd.yml). Las credenciales de AWS se registraron como secretos en el repositorio para asegurar que las conexiones con los servicios de AWS sean seguras. Sin embargo, encontré un problema al intentar desplegar el EKS (Elastic Kubernetes Service) en AWS: no tengo acceso al AWS directamente, lo que significa que no puedo interactuar con los recursos de la nube por mi cuenta. <br>
+Se creó un repositorio con CI/CD configurado mediante un pipeline de GitHub Actions (ci-cd.yml). Las credenciales de AWS se registraron como secretos en el repositorio para asegurar que las conexiones con los servicios de AWS sean seguras. Sin embargo, encontré un problema al intentar desplegar el EKS (Elastic Kubernetes Service) en AWS: no tengo acceso al AWS directamente, lo que significa que no puedo interactuar con los recursos de la nube por mi cuenta. <br>
 
 Para poder desplegar el EKS, unicamente necesitaría agregar mi usuario IAM a Kubernetes para obtener los permisos necesarios para conectarme al cluster y realizar tareas. Para sortear este "bloqueo", decidí tomar una solución temporal: creé un contenedor en Docker Hub y lo configuré para comprobar que el pipeline de GitHub Actions funcionaba correctamente. asi pude validar que el CI-CD fue configurado correctamente.
 
@@ -53,8 +53,8 @@ Una vez obtenga los accesos necesarios, se pueden modificar el pipeline para que
         ○ Configurar IAM Roles y Policies necesarias para los servicios.
         ○ Proveer opciones escalables para los nodos del clúster.
         
-Entrega:
-  ● Proporciona los archivos .tf necesarios para levantar esta infraestructura en
+Entrega: <br>
+  ● Proporciona los archivos `.tf` necesarios para levantar esta infraestructura en
 AWS.
   ● Asegúrate de incluir variables reutilizables para facilitar la personalización.
 
@@ -62,7 +62,7 @@ AWS.
   Desarrollo: 
 
 
-En el repositorio https://github.com/costellocesare/imaginamostest/tree/main/terraform, configuré los archivos .tf necesarios para crear la infraestructura base. Esta se creó en base a módulos separados:
+En el repositorio https://github.com/costellocesare/imaginamostest/tree/main/terraform, configuré los archivos `.tf` necesarios para crear la infraestructura base. Esta se creó en base a módulos separados:
 
 VPC: Configuración de una red privada virtual, incluyendo subnets públicas y privadas, un Internet Gateway y un NAT Gateway. <br>
 EKS: Creación de un clúster de Kubernetes administrado (Amazon EKS) con un grupo de nodos para la ejecución de aplicaciones. <br>
