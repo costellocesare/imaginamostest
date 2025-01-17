@@ -26,7 +26,7 @@ proponer cuál es la configuración faltante para llevar a cabo el proceso
 
 Desarrollo:
 
-Se creo el repositorio con CI/CD configurando el pipeline de github actions ci-cd.yml, las credenciales de AWS se registraron como secretos en el repositorio, tuve problemas para deplegar el EKS en AWS porque no tengo acceso al aws, para poderlo desplegar con aws solo habria que agregar mi usuario en --------------- , para sortearlo lo que hice fue un contenedor en docker hub y lo configure para comprobar que el pipeline funcionaba correctamente. ahora para pasarlo a que funcione con AWS una vez tenga los accesos cambiamos el pipeline al cluster de AWS y listo. (quedo comentado en el .yml)
+Se creo el repositorio con CI/CD configurando el pipeline de github actions ci-cd.yml, las credenciales de AWS se registraron como secretos en el repositorio, tuve problemas para deplegar el EKS en AWS porque no tengo acceso al aws, para poderlo desplegar con aws solo habria que agregar mi usuario IAM a kubernetes para poder tener los permisos necesarios para conectarme al cluster, y luego tener los permisos dentro del cluster para poder realizar cambios, para sortearlo lo que hice fue un contenedor en docker hub y lo configure para comprobar que el pipeline funcionaba correctamente. ahora para pasarlo a que funcione con AWS una vez tenga los accesos cambiamos el pipeline al cluster de AWS y listo. (quedo comentado en el .yml)
 
 
 2. Generación de infraestructura con Terraform
