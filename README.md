@@ -67,7 +67,7 @@ En el repositorio https://github.com/costellocesare/imaginamostest/tree/main/ter
 VPC: Configuración de una red privada virtual, incluyendo subnets públicas y privadas, un Internet Gateway y un NAT Gateway. <br>
 EKS: Creación de un clúster de Kubernetes administrado (Amazon EKS) con un grupo de nodos para la ejecución de aplicaciones. <br>
 RDS: Configuración de una base de datos relacional administrada (Amazon RDS) para PostgreSQL. <br>
-S3: Creación de un bucket de Amazon S3 opcional, según las necesidades del proyecto. <br>
+S3: Creación de un bucket de Amazon S3 opcional, según las necesidades del proyecto. <br><br>
 Esta estructura permite que cada componente sea reutilizable y fácil de mantener. Además, configuré las variables necesarias para facilitar la personalización, como los IDs de subnets, roles de IAM y parámetros de bases de datos.
 
 Una vez completada la configuración, se ejecutaron los siguientes comandos:
